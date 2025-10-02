@@ -277,6 +277,11 @@ parse_args() {
 	return 0
 }
 
+apply_ocr_and_create_output() {
+	ocrmypdf --clean --image-dpi 300 --output-type pdfa --force-ocr \
+		${tempdir_name}/${scanned_document_name} ${output_file}
+}
+
 main() {
 	parse_args "$@"
 	validate_deps
@@ -284,16 +289,7 @@ main() {
 	create_page_ranged_input
 	create_picture_pages
 	create_scanned_pages
-	#create_cmy_pages
-	#concat_processed_pages
-	#display_success_message
-	#pdftoppm -png ${page_ranged_input_file} {$tempdir_name}/input
-
-
-	# apply OCR to make the resulting document searchable. `ocrmypdf` performs the conversion
-	# from png to pdf automatically
-	ocrmypdf --clean --image-dpi 300 --output-type pdfa --force-ocr \
-		${tempdir_name}/${scanned_document_name} ${output_file}
+	apply_ocr_and_create_output
 }
 
 main "$@"
